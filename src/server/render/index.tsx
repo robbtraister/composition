@@ -88,6 +88,8 @@ export default async function renderSite({
             )}))document.write('<script type="text/javascript" src="/dist/polyfills.js" defer=""><\\/script>');`
         }}
       />
+      <Script name="runtime" />
+      <Script name="vendors" />
       <Script name={app} />
       {user && (
         <script type="text/javascript" src="/auth/user?jsonp=setUser" defer />

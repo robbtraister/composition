@@ -150,11 +150,20 @@ module.exports = (_, argv) => {
         }),
         new OptimizeCSSAssetsWebpackPlugin({})
       ],
-      // namedChunks: true,
-      // namedModules: true,
+      namedChunks: true,
+      namedModules: true,
+      runtimeChunk: {
+        name: 'runtime'
+      },
       splitChunks: {
-        chunks: 'async',
-        minSize: 0
+        chunks: 'all',
+        minSize: 0,
+        cacheGroups: {
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors'
+          }
+        }
       }
     },
     output: {
@@ -307,9 +316,29 @@ module.exports = (_, argv) => {
       entry: {
         www: path.resolve(__dirname, 'src', 'client', 'engine')
       },
+      optimization: {
+        ...clientConfig.optimization,
+        runtimeChunk: {
+          name: 'www~runtime'
+        },
+        splitChunks: {
+          chunks: 'all',
+          minSize: 0,
+          cacheGroups: {
+            vendors: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'www~vendors'
+            }
+          }
+        }
+      },
       plugins: [
         new DefinePlugin({
           __AUTHENTICATED__: JSON.stringify(false)
+        }),
+        new OnBuildPlugin(async stats => {
+          // delete the unused site script
+          return exec(`rm -rf ${path.join(output.path, 'dist', 'www~*')}`)
         }),
         ...clientConfig.plugins
       ]
