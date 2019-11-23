@@ -130,6 +130,7 @@ module.exports = (_, argv) => {
   const mode = isProd ? 'production' : 'development'
 
   const definitions = {
+    'process.env.NODE_ENV': JSON.stringify(mode),
     __AUTHENTICATED__: JSON.stringify(true),
     __DEFAULT_APP_ID__: JSON.stringify(env.app.id),
     __DEFAULT_APP_TITLE__: JSON.stringify(env.app.title),
